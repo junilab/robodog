@@ -7,8 +7,11 @@ namespace main {
     export function addNumbers(a: number, b: number): number {
         return a + b;
     }
-
+     /**
+     * minus two numbers
+     */
+    //% block
     export function minusNumbers(a: number, b: number): number {
-        return a + b;
+        return a - b;
     }
 }

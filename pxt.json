@@ -1,0 +1,10 @@
+{
+    "name": "custom-blocks",
+    "description": "Custom blocks for MakeCode",
+    "dependencies": {
+        "core": "*"
+    },
+    "files": [
+        "main.ts"
+    ]
+}

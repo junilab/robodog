@@ -49,13 +49,4 @@ namespace main {
             txData[14] = 0x82;
             txData[24] = value;
     }
-    
-    /**
-     * Adds two numbers and returns the result
-     */
-    //% block
-    export function addNumbers(a: number, b: number): number {
-        return counter;
-    }
-    
 }

@@ -36,8 +36,8 @@ namespace main {
             buffer[16] = value;
     }
 
-    //% block="headLED by $value"
-    export function headLED(value: number): void {
+    //% block="headLED $value"
+    export function headled(value: number): void {
             buffer[14] = 0x82;
             buffer[24] = value;
     }

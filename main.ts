@@ -1,12 +1,23 @@
 //% color="#AA278D" weight=100 icon="\uf0c3"
 namespace main {
+    export let counter = 0; // 네임스페이스 내부 전역 변수
+
+    loops.everyInterval(1000, function () {
+        counter += 1;
+        basic.showNumber(counter);
+    });
+    
+    //% block="increase counter by $value"
+    export function increaseCounter(value: number): void {
+        counter += value; // 전역 변수 사용
+    }
     
     /**
      * Adds two numbers and returns the result
      */
     //% block
     export function addNumbers(a: number, b: number): number {
-        return a + b;
+        return counter;
     }
 
     /**

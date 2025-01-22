@@ -12,6 +12,7 @@ namespace main {
         }
         return sum & 0xFF;
     }
+
     
     loops.everyInterval(1000, function () {
         if(isInit==0){

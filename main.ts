@@ -46,8 +46,8 @@ namespace main {
             txData[24] = value;
     }
     
-    //% block="headLED5 $value"
-    export function headled5(value: number): void {
+    //% block="headLED6 $value"
+    export function headled6(value: number): void {
             txData[14] = 0x82;
             txData[24] = value;
     }

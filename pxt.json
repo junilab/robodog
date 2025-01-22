@@ -1,6 +1,6 @@
 {
     "name": "custom-blocks",
-    "description": "Custom blocks for MakeCode",
+    "description": "RoboDog for MakeCode",
     "dependencies": {
         "core": "*"
     },

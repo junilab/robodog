@@ -39,7 +39,7 @@ namespace main {
             txData[16] = value;
     }
 
-    //% block="headLED3 $value"
+    //% block="headLED4 $value"
     export function headled(value: number): void {
             txData[14] = 0x82;
             txData[24] = value;

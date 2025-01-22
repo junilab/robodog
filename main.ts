@@ -61,12 +61,4 @@ namespace main {
     export function subtractNumbers(a: number, b: number): number {
         return a - b;
     }
-
-    /**
-     * Turns on an LED at a specific pin
-     */
-    //% block="turn on LED at pin %pin"
-    export function turnOnLED(pin: DigitalPin): void {
-        pins.digitalWritePin(pin, 1);
-    }
 }

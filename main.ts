@@ -14,7 +14,7 @@ namespace main {
     }
     
     loops.everyInterval(100, function () {
-        if(isInit == 0){
+        if(isInit==0 || txData==null){
             serial.redirect(SerialPin.P0, SerialPin.P1, BaudRate.BaudRate115200);
             txData = pins.createBuffer(48);
             rxData = pins.createBuffer(30);

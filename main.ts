@@ -1,5 +1,5 @@
 //% color="#AA278D" weight=100 icon="\uf0c3"
-namespace main2 {
+namespace main3 {
     let isInit = 0;
     let tof = 0;
     let txData: Buffer = null;
@@ -28,7 +28,7 @@ namespace main2 {
         basic.showNumber(tof);
     });
 
-    serial.onDataReceived("aabcd", function () {
+    serial.onDataReceived("bcd", function () {
        rxData = serial.readBuffer(24);
         tof = rxData[7]
     });

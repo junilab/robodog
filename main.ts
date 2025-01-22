@@ -1,5 +1,5 @@
 //% color="#AA278D" weight=100 icon="\uf0c3"
-namespace main {
+namespace main2 {
     let isInit = 0;
     let tof = 0;
     let txData: Buffer = null;

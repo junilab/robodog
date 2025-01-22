@@ -20,21 +20,19 @@ namespace main {
             rxData = pins.createBuffer(30);
             txData[0]=0x26; txData[1]=0xA8; txData[2]=0x14; txData[3]=0x81; txData[4]=48;
             isInit = 1;
-            basic.showNumber(1);
+            basic.showNumber(0);
         }
         txData[5] = checksum(txData);
         serial.writeBuffer(txData);
     });
 
     serial.onDataReceived("bcd", function () {
-        let buffer = serial.readBuffer(24);
-        basic.showNumber(3);
-        let chk = checksum(buffer);
-        basic.showNumber(4);
-        if(chk == buffer[5])
-            basic.showNumber(6);
-        else
-            basic.showNumber(8); 
+        if (serial.available() >= 24) { // 버퍼에 24바이트 이상 데이터가 있는지 확인
+        let buffer = serial.readBuffer(24); // 24바이트 읽기
+            basic.showNumber(buffer.length);   // 읽은 데이터 길이 출력
+        } else {
+            basic.showString("Waiting");       // 데이터 부족 시 대기
+        }
     });
     
     //% block="gesture by $value"

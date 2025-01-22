@@ -35,6 +35,12 @@ namespace main {
             buffer[15] = 0x04;
             buffer[16] = value;
     }
+
+    //% block="headLED by $value"
+    export function headLED(value: number): void {
+            buffer[14] = 0x82;
+            buffer[24] = value;
+    }
     
     /**
      * Adds two numbers and returns the result

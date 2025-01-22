@@ -20,14 +20,13 @@ namespace main {
             rxData = pins.createBuffer(30);
             txData[0]=0x26; txData[1]=0xA8; txData[2]=0x14; txData[3]=0x81; txData[4]=48;
             isInit = 1;
-            basic.showNumber(0);
+            basic.showNumber(1);
         }
         txData[5] = checksum(txData);
         serial.writeBuffer(txData);
     });
 
     serial.onDataReceived("bcd", function () {
-        basic.showNumber(2);
         let buffer = serial.readBuffer(24);
         basic.showNumber(3);
         let chk = checksum(buffer);

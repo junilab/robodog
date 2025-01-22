@@ -13,19 +13,21 @@ namespace main {
         return sum & 0xFF;
     }
     
-    loops.everyInterval(1000, function () {
+    loops.everyInterval(100, function () {
         if(isInit == 0){
             serial.redirect(SerialPin.P0, SerialPin.P1, BaudRate.BaudRate115200);
             txData = pins.createBuffer(48);
             rxData = pins.createBuffer(30);
             txData[0]=0x26; txData[1]=0xA8; txData[2]=0x14; txData[3]=0x81; txData[4]=48;
             isInit = 1;
+            basic.showNumber(0);
         }
         txData[5] = checksum(txData);
         serial.writeBuffer(txData);
     });
 
-    serial.onDataReceived("abcd", function () {
+    serial.onDataReceived("bcd", function () {
+        basic.showNumber(1);
         let buffer = serial.readBuffer(30);
         let chk = checksum(txData);
         if(chk == buffer[5])

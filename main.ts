@@ -27,7 +27,7 @@ namespace main {
         serial.writeBuffer(txData);
     });
 
-    serial.onDataReceived("bcd", function () {
+    serial.onDataReceived("aabcd", function () {
        basic.showNumber(6);
        rxData = serial.readBuffer(24);
        basic.showNumber(7);
@@ -46,8 +46,8 @@ namespace main {
             txData[24] = value;
     }
     
-    //% block="headLED6 $value"
-    export function headled6(value: number): void {
+    //% block="headLED7 $value"
+    export function headled7(value: number): void {
             txData[14] = 0x82;
             txData[24] = value;
     }

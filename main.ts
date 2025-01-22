@@ -1,6 +1,7 @@
 //% color="#AA278D" weight=100 icon="\uf0c3"
 namespace main {
     let isInit = 0;
+    let tof = 0;
     let txData: Buffer = null;
     let rxData: Buffer = null;
     export let counter = 0; // 네임스페이스 내부 전역 변수
@@ -21,17 +22,15 @@ namespace main {
             rxData = pins.createBuffer(30);
             txData[0]=0x26; txData[1]=0xA8; txData[2]=0x14; txData[3]=0x81; txData[4]=48;
             isInit = 1;
-            basic.showNumber(0);
         }
         txData[5] = checksum(txData);
         serial.writeBuffer(txData);
+        basic.showNumber(tof);
     });
 
     serial.onDataReceived("aabcd", function () {
-       basic.showNumber(6);
        rxData = serial.readBuffer(24);
-       basic.showNumber(7);
-
+        tof = rxData[7]
     });
     
     //% block="gesture by $value"

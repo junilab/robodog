@@ -27,9 +27,11 @@ namespace main {
     });
 
     serial.onDataReceived("bcd", function () {
-        basic.showNumber(1);
+        basic.showNumber(2);
         let buffer = serial.readBuffer(24);
-        let chk = checksum(txData);
+        basic.showNumber(3);
+        let chk = checksum(buffer);
+        basic.showNumber(4);
         if(chk == buffer[5])
             basic.showNumber(5);
         else

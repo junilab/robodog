@@ -32,7 +32,7 @@ namespace main {
         let chk = checksum(buffer);
         basic.showNumber(4);
         if(chk == buffer[5])
-            basic.showNumber(5);
+            basic.showNumber(6);
         else
             basic.showNumber(8); 
     });

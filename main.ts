@@ -57,12 +57,4 @@ namespace main {
     export function addNumbers(a: number, b: number): number {
         return counter;
     }
-
-    /**
-     * Subtracts the second number from the first
-     */
-    //% block
-    export function subtractNumbers(a: number, b: number): number {
-        return a - b;
-    }
 }

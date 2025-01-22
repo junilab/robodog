@@ -27,12 +27,10 @@ namespace main {
     });
 
     serial.onDataReceived("bcd", function () {
-        if (serial.available() >= 24) { // 버퍼에 24바이트 이상 데이터가 있는지 확인
-        let buffer = serial.readBuffer(24); // 24바이트 읽기
-            basic.showNumber(buffer.length);   // 읽은 데이터 길이 출력
-        } else {
-            basic.showString("Waiting");       // 데이터 부족 시 대기
-        }
+       basic.showNumber(6);
+       rxData = serial.readBuffer(24);
+       basic.showNumber(7);
+
     });
     
     //% block="gesture by $value"
@@ -41,7 +39,7 @@ namespace main {
             txData[16] = value;
     }
 
-    //% block="headLED2 $value"
+    //% block="headLED3 $value"
     export function headled(value: number): void {
             txData[14] = 0x82;
             txData[24] = value;

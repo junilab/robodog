@@ -1,13 +1,14 @@
 //% color="#AA278D" weight=100 icon="\uf0c3"
 namespace main {
     let isInit = 0;
-    let buffer: Buffer = null;
+    let txData: Buffer = null;
+    let rxData: Buffer = null;
     export let counter = 0; // 네임스페이스 내부 전역 변수
 
-    function checksum(buffer: Buffer): number {
+    function checksum(buf: Buffer): number {
         let sum = 0;
-        for (let i = 6; i < buffer.length; i++) {
-            sum += buffer[i];
+        for (let i = 6; i < buf.length; i++) {
+            sum += buf[i];
         }
         return sum & 0xFF;
     }
@@ -15,31 +16,34 @@ namespace main {
     loops.everyInterval(1000, function () {
         if(isInit == 0){
             serial.redirect(SerialPin.P0, SerialPin.P1, BaudRate.BaudRate115200);
-            buffer = pins.createBuffer(48);
-            buffer.setNumber(NumberFormat.UInt8LE, 0, 0x26);
-            buffer.setNumber(NumberFormat.UInt8LE, 1, 0xA8);
-            buffer.setNumber(NumberFormat.UInt8LE, 2, 0x14);
-            buffer.setNumber(NumberFormat.UInt8LE, 3, 0x81);
-            buffer.setNumber(NumberFormat.UInt8LE, 4, 48);
+            txData = pins.createBuffer(48);
+            rxData = pins.createBuffer(30);
+            txData[0]=0x26; txData[1]=0xA8; txData[2]=0x14; txData[3]=0x81; txData[4]=48;
             isInit = 1;
         }
-        buffer[5] = checksum(buffer);
-        serial.writeBuffer(buffer);
-        basic.showNumber(buffer[5]);
+        txData[5] = checksum(txData);
+        serial.writeBuffer(txData);
     });
 
-    
+    serial.onDataReceived("abcd", function () {
+        let buffer = serial.readBuffer(30);
+        let chk = checksum(txData);
+        if(chk == buffer[5])
+            basic.showNumber(5);
+        else
+            basic.showNumber(8); 
+    });
     
     //% block="gesture by $value"
     export function gesture(value: number): void {
-            buffer[15] = 0x04;
-            buffer[16] = value;
+            txData[15] = 0x04;
+            txData[16] = value;
     }
 
     //% block="headLED $value"
     export function headled(value: number): void {
-            buffer[14] = 0x82;
-            buffer[24] = value;
+            txData[14] = 0x82;
+            txData[24] = value;
     }
     
     /**
@@ -64,13 +68,5 @@ namespace main {
     //% block="turn on LED at pin %pin"
     export function turnOnLED(pin: DigitalPin): void {
         pins.digitalWritePin(pin, 1);
-    }
-
-    /**
-     * Turns off an LED at a specific pin
-     */
-    //% block="turn off LED at pin %pin"
-    export function turnOffLED(pin: DigitalPin): void {
-        pins.digitalWritePin(pin, 0);
     }
 }

@@ -105,12 +105,3 @@ namespace dog {
     }
 }
 
-
-
-basic.forever(function () {
-    //dog.headled(0)
-    basic.pause(3000)
-    //dog.headled(12)
-    basic.pause(3000)
-    
-})

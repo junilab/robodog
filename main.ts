@@ -1,5 +1,5 @@
 //% color="#AA278D" weight=100 icon="\uf0c3"
-namespace dog {
+namespace 로보독 {
     let isInit = 0;
     let battery = 0;
     let tof = 0;

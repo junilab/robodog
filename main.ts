@@ -1,7 +1,7 @@
 enum posture {
-     //% block="준비"
+    //% block="준비"
     zero,
-     //% block="앉기"
+    //% block="앉기"
     one,
     //% block="물구나무서기"
     two,
@@ -23,7 +23,7 @@ enum whatLeg {
     //% block="오른쪽다리"
     four
 }
-enum whatLeg2 {
+enum whatLeg_ext {
     //% block="왼쪽위"
     zero,
     //% block="왼쪽아래"
@@ -50,12 +50,116 @@ enum rotate_dir {
     //% block="반시계방향"
     one
 }
-enum direction {
+enum front_back {
     //% block="앞"
     zero,
     //% block="뒤"
     one
 }
+
+enum left_right {
+    //% block="왼쪽"
+    zero,
+    //% block="오른쪽"
+    one
+}
+
+enum lr_fb {
+    //% block="좌우"
+    zero,
+    //% block="앞뒤"
+    one
+}
+
+enum led_draw {
+    //% block="초롱초롱"
+    zero,
+    //% block="ILOVEYOU"
+    one,
+    //% block="눈감기"
+    two,
+    //% block="감사"
+    three,
+    //% block="고마워요"
+    four,
+    //% block="뱁새"
+    five,
+    //% block="좌우굴리기"
+    six,
+    //% block="찢눈"
+    seven,
+    //% block="찢눈 깜박임"
+    eight,
+    //% block="곤충"
+    nine,
+    //% block="깜박"
+    ten,
+    //% block="뱀눈"
+    eleven,
+    //% block="바람개비"
+    twelve,
+    //% block="왕눈이"
+    thirteen
+}
+
+enum mp3_list {
+    //% block="멍멍"
+    zero,
+    //% block="으르렁"
+    one,
+    //% block="화난"
+    two,
+    //% block="찡찡"
+    three,
+    //% block="거친숨"
+    four,
+    //% block="안녕"
+    five,
+    //% block="기다려"
+    six,
+    //% block="비켜"
+    seven,
+    //% block="출발"
+    eight,
+    //% block="레이저"
+    nine,
+    //% block="모터회전"
+    ten,
+    //% block="띠리리"
+    eleven,
+    //% block="외계신호"
+    twelve,
+    //% block="동작"
+    fourteen,
+    //% block="충돌"
+    fifteen,
+    //% block="도"
+    sixteen,
+    //% block="레"
+    seventeen,
+    //% block="미"
+    eighteen,
+    //% block="파"
+    nineteen,
+    //% block="솔"
+    twenty,
+    //% block="라"
+    twenty_one,
+    //% block="시"
+    twenty_two,
+    //% block="#도"
+    twenty_three
+}
+
+enum mp3_volume {
+    //% block="크게"
+    zero,
+    //% block="중간으로"
+    one,
+    //% block="작게"
+    two
+}
+
 
 /**
 * RoboDog blocks
@@ -141,28 +245,69 @@ namespace robodog {
         return (n ^ 0x8000) - 0x8000
     }
 
+    //% block="회전"
+    export function get_rotation(): number {
+        return 100;
+    }
 
-    
-    
-
-    
-    
-
-    
-
-
-
-
-    //% block="headLED4 $value"
-    export function headled(value: number): void {
-        txData[14] = 0x82;
-        txData[24] = value;
+    //% block="$what 기울기"
+    export function get_tilt(what: lr_fb): number {
+        return 100;
     }
 
 
+    //% block="거리센서"
+    export function get_tof(): number {
+        return 100;
+    }
+
+    //% block="배터리"
+    export function get_battery(): number {
+        return 100;
+    }
+
+
+    //% block="버튼"
+    export function get_button(): number {
+        return 1;
+    }
+
+    //% block="확장 서보모터 $deg 도 설정하기"
+    //% deg.defl=45
+    export function ext_servo(deg: number): void {
+
+    }
+
+
+    //% block="$what 소리를 $volume 출력하기"
+    export function sound_play(what: mp3_list, volume: mp3_volume): void {
+
+    }
+
+
+    //% block="R:$r, G:$g, B:$b로 바디LED 색상 출력하기"
+    //%r.defl=255 g.defl=255 b.defl=255
+    export function bodyled(r:number, g:number, b:number): void {
+
+    }
+
+    //% block="$what 헤드LED에 $char 문자 출력하기"
+    //%char.defl="A"
+    export function headled_print(what: left_right, char:string): void {
+
+    }
+
+    //% block="$exp 표정을 헤드 LED에 표현하기"
+    export function headled_exp(exp: led_draw): void {
+        txData[14] = 0x82;
+        txData[24] = exp;
+    }
+
+    
+
     //%block="$leg 회전속도를 어깨 $vel1, 무릎 $vel2 (으)로 설정하기"
-    //%leg.defl=whatLeg2.eight vel1.defl=50 $vel2.defl=50
-    export function motor_velocity(leg: whatLeg2, vel1: number, vel2: number): void {
+    //%leg.defl=whatLeg2.eight vel1.defl=50 vel2.defl=50
+    export function motor_velocity(leg: whatLeg_ext, vel1: number, vel2: number): void {
 
     }
 
@@ -173,19 +318,19 @@ namespace robodog {
     }
 
     //%block="$leg 어깨 $deg1도, 무릎 $deg2도 설정하기"
-    export function motor(leg: whatLeg2, deg1: number, deg2: number): void {
+    export function motor(leg: whatLeg_ext, deg1: number, deg2: number): void {
 
     }
 
     //%block="$leg 다리높이 $height, 발끝앞뒤 $fb로 설정하기"
     //%height.defl=60
-    export function leg(leg: whatLeg2, height: number, fb: number): void {
+    export function leg(leg: whatLeg_ext, height: number, fb: number): void {
         basic.showNumber(leg)
     }
 
     //%block="$dir (으)로 $velocity 빠르기로 이동하기"
     //%velocity.defl=50
-    export function move(dir: direction, velocity: number): void {
+    export function move(dir: front_back, velocity: number): void {
 
     }
 
@@ -202,5 +347,3 @@ namespace robodog {
         basic.showNumber(value)
     }
 }
-
-

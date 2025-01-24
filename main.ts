@@ -14,6 +14,7 @@ namespace robodog {
     let button = 0;
     let txData = pins.createBuffer(48);
     let rxData = pins.createBuffer(0);
+    let ledData = pins.createBuffer(34);
     let delimiter = [0x40, 0x21, 0x23, 0x25];
     export let counter = 0;
 
@@ -59,6 +60,7 @@ namespace robodog {
         }
     });
 
+
     function check_modeChange(initValue:number, mode: number): void {
         if (txData[15] != mode) {
             for (let i = 16; i <= 24; i++)
@@ -66,6 +68,7 @@ namespace robodog {
             txData[15] = mode;
         }
     }
+
 
     //% block="$action 자세 취하기"
     //% group="동작"
@@ -95,6 +98,7 @@ namespace robodog {
             txData[18] = txData[19] = height;
     }
 
+
     //% block="$dir (으)로 $velocity 빠르기로 이동하기"
     //% velocity.defl=50
     //% group="동작"
@@ -104,6 +108,7 @@ namespace robodog {
         velocity = Deflib.constrain(velocity, -100, 100);
         txData[20] = (dir == 0) ? velocity : -1 * velocity;
     }
+
 
     //% block="$leg 다리높이 $height, 발끝앞뒤 $fb로 설정하기"
     //% height.defl=60
@@ -142,6 +147,7 @@ namespace robodog {
         }
     }
 
+
     //% block="$dir (으)로 $deg 도를 $velocity각속도로 회전하기"
     //% deg.defl=90 velocity.defl=100
     //% group="동작"
@@ -176,93 +182,113 @@ namespace robodog {
     }
 
 
-
-
-
-
-    //% block="회전"
-    //% group="센서"
-    //weight=55
-    export function get_rotation(): number {
-        return 100;
-    }
-
-    //% block="$what 기울기"
-    //% group="센서"
-    //weight=56
-    export function get_tilt(what: Deflib.lr_fb): number {
-        return 100;
+    //% block="$exp 표정을 헤드 LED에 표현하기"
+    //% group="LED"
+    //% weight=89
+    export function headled_exp(exp: Deflib.led_draw): void {
+        txData[14] = (txData[14] & 0xC0) | 0x82;
+        txData[24] = exp;
+        ledData[0] = txData[14];
+        ledData[1] = ledData[1] | 0x80;
+        for(let n=0; n<16; n++)
+            ledData[n+2] = txData[n+24];
     }
 
 
-    //% block="거리센서"
-    //% group="센서"
-    //weight=57
-    export function get_tof(): number {
-        return 100;
-    }
+    //% block="$what 헤드LED에 $character 문자 출력하기"
+    //%character.defl="A"
+    //% group="LED"
+    //weight=88
+    export function headled_print(what: Deflib.left_right, character: string): void {
+        txData[14] = (txData[14] & 0xC0) | 0x83;
+        let aa = character.charCodeAt(0);
+        if (what == 0)
+            txData[24] = aa;
+        else
+            txData[32] = aa;
 
-    //% block="배터리"
-    //% group="센서"
-    //weight=58
-    export function get_battery(): number {
-        return 100;
-    }
-
-
-    //% block="버튼"
-    //% group="센서"
-    //weight=59
-    export function get_button(): number {
-        return 1;
-    }
-
-    /**
-     * Set the servo angle
-     */
-    //% block="확장 서보모터 $deg 도 설정하기"
-    //% deg.defl=45
-    //% group="확장"
-    //weight=69
-    export function ext_servo(deg: number): void {
-
-    }
-
-
-    //% block="$what 소리를 $volume 출력하기"
-    //% group="소리"
-    //weight=79
-    export function sound_play(what: Deflib.mp3_list, volume: Deflib.mp3_volume): void {
-
+        ledData[0] = txData[14];
+        ledData[1] = ledData[1] | 0x80;
+        for (let n = 0; n < 16; n++)
+            ledData[n + 2] = txData[n + 24];
     }
 
 
     //% block="R:$r, G:$g, B:$b로 바디LED 색상 출력하기"
     //%r.defl=255 g.defl=255 b.defl=255
     //% group="LED"
-    //weight=87
-    export function bodyled(r:number, g:number, b:number): void {
+    //% weight=87
+    export function bodyled(r: number, g: number, b: number): void {
+        txData[24] = Deflib.constrain(r, 0, 255);
+        txData[25] = Deflib.constrain(g, 0, 255);
+        txData[26] = Deflib.constrain(b, 0, 255);
 
+        txData[28] = txData[32] = txData[36] = txData[24];
+        txData[29] = txData[33] = txData[37] = txData[25];
+        txData[30] = txData[34] = txData[38] = txData[26];
+        txData[14] = (txData[14] & 0xC0) | 0x44;
+        ledData[1] = txData[14];
+        ledData[0] = ledData[0] | 0x40;
+        for (let n = 0; n < 16; n++)
+            ledData[n + 18] = txData[n + 24];
     }
 
-    //% block="$what 헤드LED에 $char 문자 출력하기"
-    //%char.defl="A"
-    //% group="LED"
-    //weight=88
-    export function headled_print(what: Deflib.left_right, char:string): void {
 
+    //% block="$what 소리를 $volume 출력하기"
+    //% group="소리"
+    //% weight=79
+    export function sound_play(what: Deflib.mp3_list, volume: Deflib.mp3_volume): void {
+        let id = (txData[7] & 0x80) == 0x80 ? 0x00 : 0x80;
+        txData[7] = what | id;
+        txData[8] = Deflib.constrain(volume, 0, 2) + 1;
     }
 
-    //% block="$exp 표정을 헤드 LED에 표현하기"
-    //% group="LED"
-    //weight=89
-    export function headled_exp(exp: Deflib.led_draw): void {
-        txData[14] = 0x82;
-        txData[24] = exp;
-    }
 
+    //% block="확장 서보모터 $deg 도 설정하기"
+    //% deg.defl=45
+    //% group="확장"
+    //% weight=69
+    export function ext_servo(deg: number): void {
+        txData[12] = Deflib.constrain(deg, -90, 90);
+    }
     
 
+    //% block="버튼"
+    //% group="센서"
+    //% weight=59
+    export function get_button(): number {
+        return button;
+    }
 
 
+    //% block="배터리"
+    //% group="센서"
+    //% weight=58
+    export function get_battery(): number {
+        return battery;
+    }
+
+
+    //% block="거리센서"
+    //% group="센서"
+    //% weight=57
+    export function get_tof(): number {
+        return tof;
+    }
+
+
+    //% block="$what 기울기"
+    //% group="센서"
+    //% weight=56
+    export function get_tilt(what: Deflib.lr_fb): number {
+        return what==0? roll : pitch;
+    }
+
+
+    //% block="회전"
+    //% group="센서"
+    //% weight=55
+    export function get_rotation(): number {
+        return yaw;
+    } 
 }

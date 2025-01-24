@@ -1,169 +1,8 @@
-enum posture {
-    //% block="준비"
-    zero,
-    //% block="앉기"
-    one,
-    //% block="물구나무서기"
-    two,
-    //% block="기지개켜기"
-    three,
-    //% block="인사하기"
-    four
-}
-
-enum whatLeg {
-    //% block="네다리"
-    zero,
-    //% block="앞다리"
-    one,
-    //% block="뒷다리"
-    two,
-    //% block="왼쪽다리"
-    three,
-    //% block="오른쪽다리"
-    four
-}
-enum whatLeg_ext {
-    //% block="왼쪽위"
-    zero,
-    //% block="왼쪽아래"
-    one,
-    //% block="오른쪽아래"
-    two,
-    //% block="오른쪽위"
-    three,
-    //% block="앞다리"
-    four,
-    //% block="뒷다리"
-    five,
-    //% block="왼쪽다리"
-    six,
-    //% block="오른쪽다리"
-    seven,
-    //% block="네다리"
-    eight
-}
-
-enum rotate_dir {
-    //% block="시계방향"
-    zero,
-    //% block="반시계방향"
-    one
-}
-enum front_back {
-    //% block="앞"
-    zero,
-    //% block="뒤"
-    one
-}
-
-enum left_right {
-    //% block="왼쪽"
-    zero,
-    //% block="오른쪽"
-    one
-}
-
-enum lr_fb {
-    //% block="좌우"
-    zero,
-    //% block="앞뒤"
-    one
-}
-
-enum led_draw {
-    //% block="초롱초롱"
-    zero,
-    //% block="ILOVEYOU"
-    one,
-    //% block="눈감기"
-    two,
-    //% block="감사"
-    three,
-    //% block="고마워요"
-    four,
-    //% block="뱁새"
-    five,
-    //% block="좌우굴리기"
-    six,
-    //% block="찢눈"
-    seven,
-    //% block="찢눈 깜박임"
-    eight,
-    //% block="곤충"
-    nine,
-    //% block="깜박"
-    ten,
-    //% block="뱀눈"
-    eleven,
-    //% block="바람개비"
-    twelve,
-    //% block="왕눈이"
-    thirteen
-}
-
-enum mp3_list {
-    //% block="멍멍"
-    zero,
-    //% block="으르렁"
-    one,
-    //% block="화난"
-    two,
-    //% block="찡찡"
-    three,
-    //% block="거친숨"
-    four,
-    //% block="안녕"
-    five,
-    //% block="기다려"
-    six,
-    //% block="비켜"
-    seven,
-    //% block="출발"
-    eight,
-    //% block="레이저"
-    nine,
-    //% block="모터회전"
-    ten,
-    //% block="띠리리"
-    eleven,
-    //% block="외계신호"
-    twelve,
-    //% block="동작"
-    fourteen,
-    //% block="충돌"
-    fifteen,
-    //% block="도"
-    sixteen,
-    //% block="레"
-    seventeen,
-    //% block="미"
-    eighteen,
-    //% block="파"
-    nineteen,
-    //% block="솔"
-    twenty,
-    //% block="라"
-    twenty_one,
-    //% block="시"
-    twenty_two,
-    //% block="#도"
-    twenty_three
-}
-
-enum mp3_volume {
-    //% block="크게"
-    zero,
-    //% block="중간으로"
-    one,
-    //% block="작게"
-    two
-}
-
-
 /**
-* RoboDog blocks
+* Control RoboDog 
 */
+let legPos: number[][] = [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1], [1, 0, 0, 1], [0, 1, 1, 0], [1, 1, 0, 0], [0, 0, 1, 1], [1, 1, 1, 1]];
+//% groups='["동작", "LED", "소리", "확장", "센서"]'
 //% block="로보독" weight=80 color=#4f8c61 icon="\uf0c3"
 namespace robodog {
     let isInit = 0;
@@ -173,7 +12,7 @@ namespace robodog {
     let roll = 0;
     let pitch = 0;
     let button = 0;
-    let txData: Buffer = null;
+    let txData = pins.createBuffer(48);
     let rxData = pins.createBuffer(0);
     let delimiter = [0x40, 0x21, 0x23, 0x25];
     export let counter = 0;
@@ -190,10 +29,9 @@ namespace robodog {
 
 
     loops.everyInterval(50, function () {
-        if (isInit == 0 || txData == null) {
+        if (isInit == 0) {
             serial.setRxBufferSize(40)
             serial.redirect(SerialPin.P0, SerialPin.P1, BaudRate.BaudRate115200);
-            txData = pins.createBuffer(48);
             txData[0] = 0x26; txData[1] = 0xA8; txData[2] = 0x14; txData[3] = 0x81; txData[4] = 48;
             isInit = 1;
         }
@@ -203,16 +41,16 @@ namespace robodog {
 
     serial.onDataReceived("%", function () {
         rxData = rxData.concat(serial.readBuffer(0));
-        let index = findPattern(rxData, delimiter);
+        let index = Deflib.findPattern(rxData, delimiter);
         if (index >= 0) {
             let packet = rxData.slice(0, index);
             rxData = rxData.slice(index + delimiter.length);
             if (packet.length > 19 && checksum(packet) == packet[5]) {
                 battery = packet[6]
                 tof = packet[7]
-                roll = toSigned8(packet[8])
-                pitch = toSigned8(packet[9])
-                yaw = toSigned16((packet[11] << 8) | packet[10])
+                roll = Deflib.toSigned8(packet[8])
+                pitch = Deflib.toSigned8(packet[9])
+                yaw = Deflib.toSigned16((packet[11] << 8) | packet[10])
                 button = packet[16]
                 //txData[14] = 3;
                 //txData[24] = tof % 10 + 0x30;
@@ -221,129 +59,210 @@ namespace robodog {
         }
     });
 
-    function findPattern(buffer: Buffer, pattern: number[]): number {
-        for (let j = 0; j <= buffer.length - pattern.length; j++) {
-            let match = true;
-            for (let k = 0; k < pattern.length; k++) {
-                if (buffer[j + k] !== pattern[k]) {
-                    match = false;
-                    break;
-                }
-            }
-            if (match) return j;
+    function check_modeChange(initValue:number, mode: number): void {
+        if (txData[15] != mode) {
+            for (let i = 16; i <= 24; i++)
+                txData[i] = initValue;
+            txData[15] = mode;
         }
-        return -1;
     }
 
-    function toSigned8(n: number): number {
-        n = n & 0xff
-        return (n ^ 0x80) - 0x80
+    //% block="$action 자세 취하기"
+    //% group="동작"
+    //% weight=100
+    export function gesture(action: Deflib.posture): void {
+        check_modeChange(0, 4);
+        txData[16] = Deflib.constrain(action, 0, 4)
     }
 
-    function toSigned16(n: number): number {
-        n = n & 0xffff
-        return (n ^ 0x8000) - 0x8000
+
+    //% block="$legs (을)를 $height 보행높이로 설정하기"
+    //% leg.defl=whatLeg.zero height.defl=60
+    //% group="동작"
+    //% weight=99
+    export function leg_bend(legs: Deflib.whatLeg, height: number): void {
+        check_modeChange(0, 1);
+        height = Deflib.constrain(height, 20, 90);
+        if (legs == 0)
+            txData[16] = txData[17] = txData[18] = txData[19] = height;
+        if (legs == 1)
+            txData[16] = txData[19] = height;
+        if (legs == 2)
+            txData[17] = txData[18] = height;
+        if (legs == 3)
+            txData[16] = txData[17] = height;
+        if (legs == 4)
+            txData[18] = txData[19] = height;
     }
+
+    //% block="$dir (으)로 $velocity 빠르기로 이동하기"
+    //% velocity.defl=50
+    //% group="동작"
+    //% weight=98
+    export function move(dir: Deflib.front_back, velocity: number): void {
+        check_modeChange(0, 1);
+        velocity = Deflib.constrain(velocity, -100, 100);
+        txData[20] = (dir == 0) ? velocity : -1 * velocity;
+    }
+
+    //% block="$leg 다리높이 $height, 발끝앞뒤 $fb로 설정하기"
+    //% height.defl=60
+    //% group="동작"
+    //% weight=97
+    export function leg(leg: Deflib.whatLeg_ext, height: number, fb: number): void {
+        check_modeChange(-127, 2);
+        height = Deflib.constrain(height, 20, 90);
+        fb = Deflib.constrain(fb, -90, 90);
+
+        let _pos = legPos[leg];
+        for (let n = 0; n < 4; n++) {
+            if (_pos[n] == 1) {
+                txData[16 + n * 2] = height;
+                txData[16 + n * 2 + 1] = fb;
+            }
+        }
+    }
+
+
+    //% block="$leg 어깨 $deg1도, 무릎 $deg2도 설정하기"
+    //% group="동작"
+    //% weight=96
+    export function motor(leg: Deflib.whatLeg_ext, deg1: number, deg2: number): void {
+        check_modeChange(-127, 3);
+    
+        deg1 = Deflib.constrain(deg1, -90, 90);
+        deg2 = Deflib.constrain(deg2, -90, 90);
+
+        let _pos = legPos[leg];
+        for (let n = 0; n < 4; n++) {
+            if (_pos[n] == 1) {
+                txData[16 + n * 2] = deg1;
+                txData[16 + n * 2 + 1] = deg2;
+            }
+        }
+    }
+
+    //% block="$dir (으)로 $deg 도를 $velocity각속도로 회전하기"
+    //% deg.defl=90 velocity.defl=100
+    //% group="동작"
+    //% weight=95
+    export function rotation(dir: Deflib.rotate_dir, deg: number, velocity: number): void {
+        check_modeChange(0, 1);
+        deg = Deflib.constrain(deg, -1000, 1000);
+
+        deg = (dir == 0) ? deg : -1 * deg;
+        txData[22] = deg & 0xFF;
+        txData[23] = (deg >> 8) & 0xFF;
+        txData[21] = Deflib.constrain(velocity, 10, 100);
+    }
+
+
+    //% block="$leg 회전속도를 어깨 $vel1, 무릎 $vel2 (으)로 설정하기"
+    //% leg.defl=whatLeg2.eight vel1.defl=50 vel2.defl=50
+    //% group="동작"
+    //% weight=95
+    export function motor_velocity(leg: Deflib.whatLeg_ext, vel1: number, vel2: number): void {
+        vel1 = Deflib.constrain(vel1, 10, 100);
+        vel2 = Deflib.constrain(vel2, 10, 100);
+
+        let _pos = legPos[leg];
+
+        for (let n = 0; n < 4; n++) {
+            if (_pos[n] == 1) {
+                txData[40 + n * 2] = vel1;
+                txData[40 + n * 2 + 1] = vel2;
+            }
+        }
+    }
+
+
+
+
+
 
     //% block="회전"
+    //% group="센서"
+    //weight=55
     export function get_rotation(): number {
         return 100;
     }
 
     //% block="$what 기울기"
-    export function get_tilt(what: lr_fb): number {
+    //% group="센서"
+    //weight=56
+    export function get_tilt(what: Deflib.lr_fb): number {
         return 100;
     }
 
 
     //% block="거리센서"
+    //% group="센서"
+    //weight=57
     export function get_tof(): number {
         return 100;
     }
 
     //% block="배터리"
+    //% group="센서"
+    //weight=58
     export function get_battery(): number {
         return 100;
     }
 
 
     //% block="버튼"
+    //% group="센서"
+    //weight=59
     export function get_button(): number {
         return 1;
     }
 
+    /**
+     * Set the servo angle
+     */
     //% block="확장 서보모터 $deg 도 설정하기"
     //% deg.defl=45
+    //% group="확장"
+    //weight=69
     export function ext_servo(deg: number): void {
 
     }
 
 
     //% block="$what 소리를 $volume 출력하기"
-    export function sound_play(what: mp3_list, volume: mp3_volume): void {
+    //% group="소리"
+    //weight=79
+    export function sound_play(what: Deflib.mp3_list, volume: Deflib.mp3_volume): void {
 
     }
 
 
     //% block="R:$r, G:$g, B:$b로 바디LED 색상 출력하기"
     //%r.defl=255 g.defl=255 b.defl=255
+    //% group="LED"
+    //weight=87
     export function bodyled(r:number, g:number, b:number): void {
 
     }
 
     //% block="$what 헤드LED에 $char 문자 출력하기"
     //%char.defl="A"
-    export function headled_print(what: left_right, char:string): void {
+    //% group="LED"
+    //weight=88
+    export function headled_print(what: Deflib.left_right, char:string): void {
 
     }
 
     //% block="$exp 표정을 헤드 LED에 표현하기"
-    export function headled_exp(exp: led_draw): void {
+    //% group="LED"
+    //weight=89
+    export function headled_exp(exp: Deflib.led_draw): void {
         txData[14] = 0x82;
         txData[24] = exp;
     }
 
     
 
-    //%block="$leg 회전속도를 어깨 $vel1, 무릎 $vel2 (으)로 설정하기"
-    //%leg.defl=whatLeg2.eight vel1.defl=50 vel2.defl=50
-    export function motor_velocity(leg: whatLeg_ext, vel1: number, vel2: number): void {
 
-    }
 
-    //%block="$dir (으)로 $deg 도를 $velocity각속도로 회전하기"
-    //%deg.defl=90 velocity.defl=100
-    export function rotation(dir: rotate_dir, deg: number, velocity: number): void {
-
-    }
-
-    //%block="$leg 어깨 $deg1도, 무릎 $deg2도 설정하기"
-    export function motor(leg: whatLeg_ext, deg1: number, deg2: number): void {
-
-    }
-
-    //%block="$leg 다리높이 $height, 발끝앞뒤 $fb로 설정하기"
-    //%height.defl=60
-    export function leg(leg: whatLeg_ext, height: number, fb: number): void {
-        basic.showNumber(leg)
-    }
-
-    //%block="$dir (으)로 $velocity 빠르기로 이동하기"
-    //%velocity.defl=50
-    export function move(dir: front_back, velocity: number): void {
-
-    }
-
-    //%block="$leg (을)를 $height 보행높이로 설정하기"
-    //%leg.defl=whatLeg.zero height.defl=60
-    export function leg_bend(leg: whatLeg, height: number): void {
-
-    }
-
-    //%block="$value 자세 취하기"
-    export function gesture(value: posture): void {
-        //txData[15] = 0x04;
-        //txData[16] = value;
-        basic.showNumber(value)
-    }
 }

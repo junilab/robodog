@@ -1,10 +1,11 @@
 {
-    "name": "custom-blocks",
+    "name": "RoboDog-blocks",
     "description": "RoboDog for MakeCode",
     "dependencies": {
         "core": "*"
     },
     "files": [
-        "main.ts"
+        "robodog.ts",
+        "deflib.ts"
     ]
 }

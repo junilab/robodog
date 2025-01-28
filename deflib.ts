@@ -108,60 +108,60 @@ namespace Deflib{
 
     export enum mp3_list {
         //% block="멍멍"
-        zero,
+        _1 = 1,
         //% block="으르렁"
-        one,
+        _2 = 2,
         //% block="화난"
-        two,
+        _3 = 3,
         //% block="찡찡"
-        three,
+        _4 = 4,
         //% block="거친숨"
-        four,
+        _5 = 5,
         //% block="안녕"
-        five,
+        _11 = 11,
         //% block="기다려"
-        six,
+        _12 = 12,
         //% block="비켜"
-        seven,
+        _13 = 13,
         //% block="출발"
-        eight,
+        _14 = 14,
         //% block="레이저"
-        nine,
+        _21 = 21,
         //% block="모터회전"
-        ten,
+        _22 = 22,
         //% block="띠리리"
-        eleven,
+        _23 = 23,
         //% block="외계신호"
-        twelve,
+        _24 = 24,
         //% block="동작"
-        fourteen,
+        _25 = 25,
         //% block="충돌"
-        fifteen,
+        _26 = 26,
         //% block="도"
-        sixteen,
+        _31 = 31,
         //% block="레"
-        seventeen,
+        _32 = 32,
         //% block="미"
-        eighteen,
+        _33 = 33,
         //% block="파"
-        nineteen,
+        _34 = 34,
         //% block="솔"
-        twenty,
+        _35 = 35,
         //% block="라"
-        twenty_one,
+        _36 = 36,
         //% block="시"
-        twenty_two,
+        _37 = 37,
         //% block="#도"
-        twenty_three
+        _38 = 38
     }
 
     export enum mp3_volume {
         //% block="크게"
-        zero,
+        zero = 3,
         //% block="중간으로"
-        one,
+        one = 2,
         //% block="작게"
-        two
+        two = 1
     }
 
 
@@ -196,9 +196,4 @@ namespace Deflib{
             val = min
         return val
     }
-
-    export function complement(val: number): number {
-
-    return 0;
-}
 }

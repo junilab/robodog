@@ -256,7 +256,7 @@ namespace robodog {
     export function sound_play(what: Deflib.mp3_list, volume: Deflib.mp3_volume): void {
         let id = (txData[7] & 0x80) == 0x80 ? 0x00 : 0x80;
         txData[7] = what | id;
-        txData[8] = Deflib.constrain(volume, 0, 2) + 1;
+        txData[8] = volume;
     }
 
 

@@ -79,7 +79,7 @@ namespace robodog {
 
     function check_modeChange(initValue:number, mode: number): void {
         if (txData[15] != mode) {
-            for (let i = 16; i <= 24; i++)
+            for (let i = 16; i < 24; i++)
                 txData[i] = initValue;
             txData[15] = mode;
         }

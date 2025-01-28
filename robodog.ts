@@ -77,7 +77,7 @@ namespace robodog {
     });
 
 
-    function check_modeChange(initValue:number, mode: number): void {
+    function check_modeChange(initValue: number, mode: number): void {
         if (txData[15] != mode) {
             for (let i = 16; i < 24; i++)
                 txData[i] = initValue;
@@ -150,7 +150,7 @@ namespace robodog {
     //% weight=96
     export function motor(leg: Deflib.whatLeg_ext, deg1: number, deg2: number): void {
         check_modeChange(-127, 3);
-    
+
         deg1 = Deflib.constrain(deg1, -90, 90);
         deg2 = Deflib.constrain(deg2, -90, 90);
 
@@ -206,15 +206,31 @@ namespace robodog {
         txData[24] = exp;
         ledData[0] = txData[14];
         ledData[1] = ledData[1] | 0x80;
-        for(let n=0; n<16; n++)
-            ledData[n+2] = txData[n+24];
+        for (let n = 0; n < 16; n++)
+            ledData[n + 2] = txData[n + 24];
+    }
+
+    //% block="$what 헤드 LED에 $data 표현하기"
+    //% group="LED"
+    //% weight=88
+    export function headled_draw(what: Deflib.left_right, data:number[]): void {
+        if (!Array.isArray(data) || data.length != 8)
+            return
+        
+        txData[14] = (txData[14] & 0xC0) | 0x81;
+        for (let n = 0; n < 8; n++)
+            txData[24 + what*8 + n] = data[n];
+        ledData[0] = txData[14];
+        ledData[1] = ledData[1] | 0x80;
+        for (let n = 0; n < 16; n++)
+            ledData[n + 2] = txData[n + 24];
     }
 
 
     //% block="$what 헤드LED에 $character 문자 출력하기"
     //%character.defl="A"
     //% group="LED"
-    //weight=88
+    //weight=87
     export function headled_print(what: Deflib.left_right, character: string): void {
         txData[14] = (txData[14] & 0xC0) | 0x83;
         let aa = character.charCodeAt(0);
@@ -233,7 +249,7 @@ namespace robodog {
     //% block="R:$r, G:$g, B:$b로 바디LED 색상 출력하기"
     //%r.defl=255 g.defl=255 b.defl=255
     //% group="LED"
-    //% weight=87
+    //% weight=86
     export function bodyled(r: number, g: number, b: number): void {
         txData[24] = Deflib.constrain(r, 0, 255);
         txData[25] = Deflib.constrain(g, 0, 255);
@@ -267,7 +283,7 @@ namespace robodog {
     export function ext_servo(deg: number): void {
         txData[12] = Deflib.constrain(deg, -90, 90);
     }
-    
+
 
     //% block="버튼"
     //% group="센서"
@@ -297,7 +313,7 @@ namespace robodog {
     //% group="센서"
     //% weight=56
     export function get_tilt(what: Deflib.lr_fb): number {
-        return what==0? roll : pitch;
+        return what == 0 ? roll : pitch;
     }
 
 
@@ -306,5 +322,5 @@ namespace robodog {
     //% weight=55
     export function get_rotation(): number {
         return yaw;
-    } 
+    }
 }

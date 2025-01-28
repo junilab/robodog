@@ -1,5 +1,5 @@
 
-namespace Deflib{
+namespace Deflib {
     export enum posture {
         //% block="준비"
         zero,
@@ -189,10 +189,10 @@ namespace Deflib{
         return (n ^ 0x8000) - 0x8000
     }
 
-    export function constrain(val:number, min:number, max:number): number {
-        if(val > max)
+    export function constrain(val: number, min: number, max: number): number {
+        if (val > max)
             val = max
-        if(val < min)
+        if (val < min)
             val = min
         return val
     }

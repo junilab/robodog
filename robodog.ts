@@ -96,10 +96,10 @@ namespace robodog {
 
 
     //% block="$legs (을)를 $height 보행높이로 설정하기"
-    //% leg.defl=whatLeg.zero height.defl=60
+    //% leg.defl=Deflib.whatlegs.all_legs height.defl=60
     //% group="동작"
     //% weight=99
-    export function leg_bend(legs: Deflib.whatLeg, height: number): void {
+    export function leg_bend(legs: Deflib.whatlegs, height: number): void {
         check_modeChange(0, 1);
         height = Deflib.constrain(height, 20, 90);
         if (legs == 0)
@@ -122,7 +122,7 @@ namespace robodog {
     export function move(dir: Deflib.front_back, velocity: number): void {
         check_modeChange(0, 1);
         velocity = Deflib.constrain(velocity, -100, 100);
-        txData[20] = (dir == 0) ? velocity : -1 * velocity;
+        txData[20] = (dir == Deflib.front_back.front) ? velocity : -1 * velocity;
     }
 
 
@@ -130,7 +130,7 @@ namespace robodog {
     //% height.defl=60
     //% group="동작"
     //% weight=97
-    export function leg(leg: Deflib.whatLeg_ext, height: number, fb: number): void {
+    export function leg(leg: Deflib.legs, height: number, fb: number): void {
         check_modeChange(-127, 2);
         height = Deflib.constrain(height, 20, 90);
         fb = Deflib.constrain(fb, -90, 90);
@@ -148,7 +148,7 @@ namespace robodog {
     //% block="$leg 어깨 $deg1도, 무릎 $deg2도 설정하기"
     //% group="동작"
     //% weight=96
-    export function motor(leg: Deflib.whatLeg_ext, deg1: number, deg2: number): void {
+    export function motor(leg: Deflib.legs, deg1: number, deg2: number): void {
         check_modeChange(-127, 3);
 
         deg1 = Deflib.constrain(deg1, -90, 90);
@@ -172,7 +172,7 @@ namespace robodog {
         check_modeChange(0, 1);
         deg = Deflib.constrain(deg, -1000, 1000);
 
-        deg = (dir == 0) ? deg : -1 * deg;
+        deg = (dir == Deflib.rotate_dir.cw) ? deg : -1 * deg;
         txData[22] = deg & 0xFF;
         txData[23] = (deg >> 8) & 0xFF;
         txData[21] = Deflib.constrain(velocity, 10, 100);
@@ -180,10 +180,10 @@ namespace robodog {
 
 
     //% block="$leg 회전속도를 어깨 $vel1, 무릎 $vel2 (으)로 설정하기"
-    //% leg.defl=whatLeg2.eight vel1.defl=50 vel2.defl=50
+    //% leg.defl=Deflib.legs.all_legs vel1.defl=50 vel2.defl=50
     //% group="동작"
     //% weight=95
-    export function motor_velocity(leg: Deflib.whatLeg_ext, vel1: number, vel2: number): void {
+    export function motor_velocity(leg: Deflib.legs, vel1: number, vel2: number): void {
         vel1 = Deflib.constrain(vel1, 10, 100);
         vel2 = Deflib.constrain(vel2, 10, 100);
 
@@ -234,11 +234,7 @@ namespace robodog {
     export function headled_print(what: Deflib.left_right, character: string): void {
         txData[14] = (txData[14] & 0xC0) | 0x83;
         let aa = character.charCodeAt(0);
-        if (what == 0)
-            txData[24] = aa;
-        else
-            txData[32] = aa;
-
+		txData[24 + what*8] = aa;
         ledData[0] = txData[14];
         ledData[1] = ledData[1] | 0x80;
         for (let n = 0; n < 16; n++)
@@ -313,7 +309,7 @@ namespace robodog {
     //% group="센서"
     //% weight=56
     export function get_tilt(what: Deflib.lr_fb): number {
-        return what == 0 ? roll : pitch;
+        return what == Deflib.lr_fb.lr ? roll : pitch;
     }
 
 

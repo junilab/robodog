@@ -30,7 +30,7 @@ namespace robodog {
     }
 
 
-    loops.everyInterval(50, function () {
+    loops.everyInterval(10, function () {
         if (isInit == 0) {
             serial.setRxBufferSize(40)
             serial.redirect(SerialPin.P0, SerialPin.P1, BaudRate.BaudRate115200);

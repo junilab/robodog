@@ -3,7 +3,7 @@ namespace Deflib {
     export enum leg {
         LEFT_FRONT = 0,
         LEFT_BACK = 1,
-        RIGHT_BACK 2,
+        RIGHT_BACK = 2,
         RIGHT_FRONT = 3,
         FRONT_LEG = 4,
         BACK_LEG = 5,

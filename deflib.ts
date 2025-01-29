@@ -1,90 +1,78 @@
 
 namespace Deflib {
-    export enum leg {
-        LEFT_FRONT = 0,
-        LEFT_BACK = 1,
-        RIGHT_BACK = 2,
-        RIGHT_FRONT = 3,
-        FRONT_LEG = 4,
-        BACK_LEG = 5,
-        LEFT_LEG = 6,
-        RIGHT_LEG = 7,
-        ALL_LEG = 8
-    }
-    
     export enum posture {
         //% block="준비"
-        zero,
+        ready,
         //% block="앉기"
-        one,
+        sitdown,
         //% block="물구나무서기"
-        two,
+        handstand,
         //% block="기지개켜기"
-        three,
+        stretch,
         //% block="인사하기"
-        four
+        sayhello
     }
 
-    export enum whatLeg {
+    export enum whatlegs {
         //% block="네다리"
-        zero,
+        all_legs=0,
         //% block="앞다리"
-        one,
+        front_legs=1,
         //% block="뒷다리"
-        two,
+        back_legs=2,
         //% block="왼쪽다리"
-        three,
+        left_legs=3,
         //% block="오른쪽다리"
-        four
+        right_legs=4
     }
 
-    export enum whatLeg_ext {
+    export enum legs {
         //% block="왼쪽위"
-        zero,
+        left_front=0,
         //% block="왼쪽아래"
-        one,
+        left_back=1,
         //% block="오른쪽아래"
-        two,
+        right_back=2,
         //% block="오른쪽위"
-        three,
+        right_front=3,
         //% block="앞다리"
-        four,
+        front_legs=4,
         //% block="뒷다리"
-        five,
+        back_legs=5,
         //% block="왼쪽다리"
-        six,
+        left_legs=6,
         //% block="오른쪽다리"
-        seven,
+        right_legs=7,
         //% block="네다리"
-        eight
+        all_legs=8
     }
 
     export enum rotate_dir {
         //% block="시계방향"
-        zero,
+        cw=0,
         //% block="반시계방향"
-        one
+        ccw=1 
     }
 
     export enum front_back {
         //% block="앞"
-        zero,
+        front=0,
         //% block="뒤"
-        one
+        back=1
     }
 
     export enum left_right {
         //% block="왼쪽"
-        zero,
+        left=0,
         //% block="오른쪽"
-        one
+        right=1
     }
 
     export enum lr_fb {
         //% block="좌우"
-        zero,
+        lr=0,
         //% block="앞뒤"
-        one
+        fb=1
     }
 
     export enum led_draw {
@@ -169,11 +157,11 @@ namespace Deflib {
 
     export enum mp3_volume {
         //% block="크게"
-        zero = 3,
+        big = 3,
         //% block="중간으로"
-        one = 2,
+        middle = 2,
         //% block="작게"
-        two = 1
+        small = 1
     }
 
 

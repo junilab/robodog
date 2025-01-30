@@ -1,11 +1,21 @@
 {
     "name": "RoboDog-blocks",
-    "description": "RoboDog for MakeCode",
+    "version": "1.0.0",
+    "description": "RoboDog extension for micro:bit",
+    "license": "MIT",
     "dependencies": {
         "core": "*"
     },
     "files": [
         "robodog.ts",
         "deflib.ts"
-    ]
+    ],
+    "icon": "⚡",
+    "card": {
+        "name": "RoboDog-blocks",
+        "description": "RoboDog extension for micro:bit",
+        "imageUrl": "https://raw.githubusercontent.com/In-Su/myextension/main/logo.png",
+        "color": "blue",
+        "license": "MIT"
+  }
 }

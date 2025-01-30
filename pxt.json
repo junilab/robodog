@@ -14,7 +14,7 @@
     "card": {
         "name": "RoboDog-blocks",
         "description": "RoboDog extension for micro:bit",
-        "imageUrl": "https://raw.githubusercontent.com/In-Su/myextension/main/logo.png",
+        "imageUrl": "https://github.com/junilab/robodog/blob/main/robodog.png",
         "color": "blue",
         "license": "MIT"
   }

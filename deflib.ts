@@ -152,7 +152,17 @@ namespace Deflib {
         //% block="시"
         _37 = 37,
         //% block="#도"
-        _38 = 38
+        _38 = 38,
+        //% block="user def1"
+        _41 = 41,
+        //% block="user def2"
+        _42 = 42,
+        //% block="user def3"
+        _43 = 43,
+        //% block="user def4"
+        _44 = 44,
+        //% block="user def5"
+        _45 = 45
     }
 
     export enum mp3_volume {
